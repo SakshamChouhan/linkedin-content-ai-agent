@@ -30,7 +30,7 @@ The application follows a modular design with the following key components:
 |         v                   v                   v                     |
 | +-------+-------------------+-------------------+----------------+    |
 | |                                                                |    |
-| |                      SQLite Database                           |    |
+| |                      MongoDB Database                          |    |
 | |                                                                |    |
 | +----------------------------------------------------------------+    |
 |                                                                       |
@@ -44,8 +44,8 @@ The application follows a modular design with the following key components:
 The scraper module is responsible for extracting data from LinkedIn profiles:
 
 - **Functions**:
-  - `scrape_linkedin_profile(profile_url)`: Main function to scrape a profile
-  - `scrape_multiple_profiles(profile_urls)`: Batch profile scraping
+  - `scrape_linkedin_profile(profile_url)`: Scrape a LinkedIn profile (profile info, posts, engagement)
+  - `scrape_multiple_profiles(profile_urls)`: Batch scrape profiles
 
 - **Data Collected**:
   - Profile information (name, headline, connections)
@@ -57,105 +57,114 @@ The scraper module is responsible for extracting data from LinkedIn profiles:
 This module processes the raw data into actionable insights:
 
 - **Functions**:
-  - `analyze_post_engagement(posts_df)`: Analyzes engagement metrics
-  - `analyze_posting_patterns(posts_df)`: Identifies optimal posting times
-  - `analyze_content_themes(posts_df)`: Categorizes content by theme
-  - `get_optimal_posting_time(posts_df)`: Recommends best time to post
-  - `extract_hashtags(posts_df)`: Analyzes hashtag effectiveness
+  - `analyze_post_engagement(posts_df)`: Analyze engagement metrics
+  - `analyze_posting_patterns(posts_df)`: Identify optimal posting times
+  - `analyze_content_length(posts_df)`: Analyze content length & correlations
+  - `get_optimal_posting_time(posts_df)`: Recommend best time to post
+  - `analyze_hashtags(posts_df)`: Hashtag effectiveness
+  - `sentiment_analysis(posts_df)`: Post sentiment breakdown
 
 - **Analysis Types**:
   - Engagement correlation with content type
   - Time-based engagement patterns
   - Content length optimization
-  - Topic performance analysis
+  - Topic, tone, and sentiment performance analysis
 
 ### 3. Content Generation Module (`content_generator.py`)
 
 Interfaces with Google's Gemini AI to generate LinkedIn posts:
 
 - **Functions**:
-  - `generate_post(topic, tone, ...)`: Creates LinkedIn post variations
-  - `generate_hashtags(topic, num_hashtags)`: Produces relevant hashtags
-  - `update_feedback_preferences(feedback_data)`: Learns from user feedback
+  - `generate_post(profile_url, topic, tone, ...)`: Create LinkedIn post variations
+  - `update_feedback_preferences(...)`: Learn from feedback
 
 - **AI Integration**:
-  - Uses Gemini-1.5-pro model for high-quality content
-  - Dynamic prompt engineering based on user preferences
-  - JSON response parsing and error handling
+  - Uses Gemini-1.5-pro for content
+  - Prompt engineering based on user profile, history, and feedback
+  - Receives content suggestions, hashtags, and tones
 
 ### 4. Database Module (`database.py`)
 
-Handles data persistence and retrieval:
+Handles all data persistence and retrieval using MongoDB:
 
 - **Functions**:
-  - `initialize_database()`: Creates necessary database tables
-  - `save_profile(profile_data)`: Stores profile information
-  - `get_posts()`: Retrieves post data for analysis
-  - `save_generated_post(content, ...)`: Stores AI-generated content
-  - `get_post_feedback_stats()`: Analyzes feedback patterns
+  - `initialize_database()`: Connect and verify MongoDB connection
+  - `save_profile(profile_data)`: Store profile info
+  - `get_profile_urls()`: List available profile URLs
+  - `get_profile_data_by_url(profile_url)`: Retrieve full profile data
+  - `get_posts_by_profile_url(profile_url)`: Posts for a given profile (returns DataFrame)
+  - `save_analysis_result(profile_url, analysis_data)`: Save analytics for display
+  - `save_feedback(data)`: Store user feedback (with timestamp)
+  - `get_feedback_by_profile_url(profile_url)`: Retrieve all feedback for analytics
 
-- **Tables**:
+- **MongoDB Collections**:
   - `profiles`: LinkedIn profile information
-  - `posts`: Scraped posts with engagement data
-  - `generated_posts`: AI-generated content with feedback
+  - `posts`: Scraped posts & engagement data
+  - `analysis`: Analysis results for profiles
+  - `feedback`: User feedback on posts and content
 
 ### 5. Web Interface (`app.py`)
 
-Streamlit-based user interface with multiple pages:
+Streamlit-based user interface with multiple interactive pages:
 
 - **Pages**:
-  - Profile Analysis: View scraped LinkedIn data
-  - Content Insights: Explore content performance metrics
-  - Post Generator: Create AI-powered LinkedIn posts
-  - Feedback Dashboard: Track content performance
+  - Profile Analysis: View scraped LinkedIn data by profile
+  - Content Insights: Explore content performance and trends
+  - Post Generator: Create & customize AI-powered LinkedIn posts
+  - Feedback Dashboard: Track post performance, likes/dislikes/saves, feedback trends
 
 - **Features**:
-  - Interactive data visualizations
-  - Form-based input for content generation
-  - Feedback collection for continuous improvement
+  - Interactive visualizations (matplotlib, pandas)
+  - Feedback-driven learning loop
+  - Form-based content generation & feedback submission
+  - All analytics live-updated from MongoDB
 
 ## Data Flow
 
 1. **Data Collection Process**:
    - User enters LinkedIn profile URL
-   - System scrapes profile and post data
-   - Data is processed and stored in the database
+   - System scrapes profile and post data (via Data Collection Module)
+   - Data is processed and stored in MongoDB
 
 2. **Analysis Process**:
-   - Raw data is retrieved from the database
-   - Analysis functions identify patterns and insights
-   - Results are visualized in the Content Insights page
+   - Raw data retrieved from MongoDB
+   - Analysis functions run on posts, profiles, or feedback
+   - Insights and visualizations displayed in Streamlit UI
 
 3. **Content Generation Process**:
-   - User enters topic and preferences
-   - System constructs AI prompt based on preferences and past performance
-   - Google's Gemini API generates content variations
-   - User provides feedback on generated content
+   - User provides topic, profile selection, and preferences
+   - System constructs Gemini AI prompt using profile history and feedback
+   - Content and hashtags generated; user provides feedback
 
-4. **Learning Process**:
-   - User feedback is stored in the database
-   - System analyzes feedback patterns
-   - Content generation adapts based on learning
-   - Performance metrics are displayed in the Feedback Dashboard
+4. **Learning & Feedback Loop**:
+   - User and analytics feedback is saved in MongoDB
+   - System adapts suggestions based on feedback (topic, tone, engagement, sentiment analytics)
+   - Dashboard visualizes KPIs, trends, and topic/tone effectiveness
 
 ## Technology Stack Details
 
-- **Frontend**: Streamlit 1.32.0
+- **Frontend**: Streamlit 1.32.0+
 - **Data Processing**: Pandas 2.2.0, NumPy 1.26.4
 - **Visualization**: Matplotlib 3.8.3
-- **AI**: Google Generative AI 0.8.5
+- **AI**: Google Generative AI 0.8.5+
 - **Web Scraping**: Trafilatura 1.6.3
-- **Database**: SQLite (built-in)
+- **Database**: MongoDB
 
 ## Security Considerations
 
-- API keys are stored as environment variables
-- Database is local to prevent unauthorized access
-- Error handling prevents exposure of sensitive information
+- API keys and DB URIs are loaded from `.env` and never hardcoded
+- Database can run locally or with strict limited network access for privacy
+- Error handling prevents sensitive user/key information from exposure
 
-## Performance Optimization
+## Performance & Scalability
 
+- Efficient MongoDB queries and indexing strategies (collections auto-created)
+- Use of pandas for fast in-memory analysis
 - Caching mechanism for expensive operations
-- Efficient data storage and retrieval patterns
 - Batched processing for multiple profiles
 - Parallel processing where applicable
+
+---
+
+**Note:**  
+Ensure your `.env` file defines both `GOOGLE_API_KEY` and `MONGO_URI` for proper application functionality.
