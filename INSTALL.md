@@ -19,8 +19,8 @@ This document provides step-by-step instructions for setting up and running the 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://SakshamChouhan/linkedin-content-ai.git
-cd linkedin-content-ai
+git clone https://SakshamChouhan/linkedin-content-ai-agent.git
+cd linkedin-content-ai-agent
 ```
 
 ### 2. Install Dependencies
