@@ -4,16 +4,15 @@
 
 LinkedIn Content Creator AI helps users analyze LinkedIn profiles, find content trends, generate tailored AI-powered posts, and track their effectiveness. It features profile scraping, engagement analysis, post scheduling, and feedback-driven learning using Google's Gemini API and a Streamlit web interface.
 
-![LinkedIn Content Creator AI](./images/profileAnalysis.png)
-![LinkedIn Content Creator AI](./images/contentAnalysis.png)
-![LinkedIn Content Creator AI](./images/postGenerator.png)
-![LinkedIn Content Creator AI](./images/postGeneratorResult.png)
-
+![LinkedIn Profile Analysis](./images/profileAnalysis.png)
+![Content Insights Analysis](./images/contentAnalysis.png)
+![Post Generator](./images/postGenerator.png)
+![Post Generator Result](./images/postGeneratorResult.png)
 
 ## Technology Stack
 - **Frontend**: Streamlit
 - **Backend**: Python 3.11+
-- **Database**: SQLite
+- **Database**: MongoDB
 - **AI**: Google's Gemini API
 - **Data Visualization**: Matplotlib
 - **Data Processing**: Pandas
@@ -22,6 +21,7 @@ LinkedIn Content Creator AI helps users analyze LinkedIn profiles, find content 
 
 ### Prerequisites
 - Python 3.11 or higher
+- MongoDB instance (local or remote, set the MONGO_URI in your .env)
 - Google Gemini API key (for AI-powered content generation)
 
 ### Installation
@@ -32,8 +32,8 @@ For complete setup instructions, please see the [Installation Guide](./INSTALL.m
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/SakshamChouhan/linkedin-content-ai-agent.git
-cd linkedin-content-ai-agent
+git clone https://github.com/SakshamChouhan/linkedin-content-ai.git
+cd linkedin-content-ai
 ```
 
 2. Install dependencies:
@@ -41,19 +41,20 @@ cd linkedin-content-ai-agent
 pip install -r requirements.txt
 ```
 
-3. Set up your Gemini API key in a `.env` file:  
-Create a file named `.env` in the project root (same folder as `app.py`), and add your Gemini API key:
+3. Set up your credentials in a `.env` file:  
+Create a file named `.env` in the project root (same folder as `app.py`), and add:
 ```dotenv
 GOOGLE_API_KEY=your_gemini_api_key
+MONGO_URI=your_mongodb_connection_string
 ```
-Replace `your_gemini_api_key` with your actual Gemini API key from [Google AI Studio](https://ai.google.dev/).  
-*Note: Do not wrap your API key in quotation marks.*
+Replace `your_gemini_api_key` with your Gemini API key from [Google AI Studio](https://ai.google.dev/), and `your_mongodb_connection_string` with your MongoDB connection string (e.g., `mongodb://localhost:27017`).  
+*Note: Do not wrap your keys in quotation marks.*
 
 4. Run the application:
 ```bash
 streamlit run app.py
 ```
-By default, this will open at [http://localhost:8501](http://localhost:8501) in your browser.
+By default, this opens at [http://localhost:8501](http://localhost:8501) in your browser.
 
 ## Architecture
 
@@ -61,74 +62,51 @@ A detailed explanation of the application's architecture, main modules, and thei
 
 ---
 
-**For an in-depth technical overview or data flow information, refer to [ARCHITECTURE.md](./ARCHITECTURE.md).**
-
----
-
 ## Usage Guide
 
 ### Profile Analysis
-1. Navigate to the "Profile Analysis" section
-2. Enter a LinkedIn profile URL or select from the example profiles
-3. Click "Scrape and Analyze Profile"
-4. View the results showing post history and engagement metrics
+1. Navigate to the "Profile Analysis" section (sidebar)
+2. Select or enter a LinkedIn profile
+3. Click "Load Profile Data" to view history and engagement metrics
 
 ### Content Insights
-1. Go to the "Content Insights" section after analyzing profiles
-2. Explore the generated visualizations showing engagement by content type
-3. View optimal posting times based on historical data
-4. Analyze how content length affects engagement
+1. Go to the "Content Insights" section
+2. Explore visualizations showing engagement by content type and posting patterns
+3. View optimal posting times and content analytics
 
 ### Generating Posts
-1. Navigate to the "Post Generator" section
-2. Enter a topic or theme for your post
-3. Customize options (tone, length, hashtags, etc.)
-4. Click "Generate Post" to create AI-powered content variations
-5. Provide feedback on posts (Like/Dislike) to improve future generations
+1. Open the "Post Generator" section
+2. Enter post topic/theme
+3. Set tone, length, hashtags, etc.
+4. Click "Generate Post" to create AI-powered post variations
+5. Submit feedback on generated posts
 
 ### Feedback Dashboard
-1. Visit the "Feedback Dashboard" to see performance analytics
-2. View trends showing which content types perform best
-3. Analyze tone effectiveness across different post types
-4. Track improvement over time as the AI learns your preferences
+1. Access the "Feedback Dashboard" to view analytics
+2. See trends over time, distribution of likes/dislikes, and analyze feedback by topic/tone
 
 ## Key Innovations
 
-1. **Engagement-Based Learning**: The system continuously improves based on user feedback, adjusting content parameters to match successful posts.
-
-2. **Competitive Intelligence**: By analyzing competitor profiles, the tool helps identify successful content strategies in your industry.
-
-3. **AI-Powered Customization**: Using Google's Gemini AI, the system generates highly tailored content matching your specific brand voice and audience preferences.
-
-4. **Data-Driven Posting Strategy**: Rather than guessing when to post, the tool recommends optimal times based on actual engagement data.
-
-5. **Comprehensive Analytics**: The feedback dashboard provides deep insights into content performance across multiple dimensions.
+1. **Engagement-Based Learning**: The system improves content suggestions based on user feedback.
+2. **Competitive Intelligence**: Analyze competitor profiles and gain insights for your own strategy.
+3. **AI-Powered Customization**: Gemini API adapts content to your brand style and audience.
+4. **Data-Driven Strategy**: Recommendations (optimal post time, length, hashtags, more) use real engagement data.
+5. **Comprehensive Analytics**: Dashboard provides deep, multi-dimensional post and feedback insights.
 
 ## Results and Performance
 
-The LinkedIn Content Creator AI demonstrates significant advantages over manual content creation:
-
-1. **Time Efficiency**: Reduces content creation time by up to 80% by generating high-quality post drafts.
-
-2. **Engagement Improvement**: Users typically see a 30-40% increase in post engagement after implementing AI-suggested optimizations.
-
-3. **Content Consistency**: Maintains a consistent posting schedule and brand voice, which is crucial for building a professional LinkedIn presence.
-
-4. **Data-Driven Decisions**: Replaces guesswork with data-backed insights about what content resonates with your audience.
+- **Time Efficiency:** Reduces manual content work by up to 80%.
+- **Engagement:** Users typically see a 30-40% improvement in post engagement.
+- **Content Consistency:** Automated schedules and voice.
+- **Data-Driven Decisions:** Informed by feedback trends and analysis.
 
 ## Limitations and Future Work
 
-Current limitations and planned improvements:
-
-1. **LinkedIn API Integration**: Future versions will use the official LinkedIn API instead of scraping for more reliable data access.
-
-2. **Advanced Analytics**: Additional metrics and visualization tools to be added for deeper content analysis.
-
-3. **Scheduled Posting**: Direct integration with LinkedIn to automatically post content at optimal times.
-
-4. **Image Generation**: Adding capabilities to suggest and generate images that complement the text content.
-
-5. **Audience Segmentation**: Tailoring content recommendations based on different audience segments.
+- **Official LinkedIn API Integration:** Future support for API-based data rather than scraping.
+- **Advanced Analytics:** Expand metrics and visualization suite.
+- **Auto-Scheduled Posting:** Direct to LinkedIn planned.
+- **Image Generation:** Suggest/generate post imagery.
+- **Audience Segmentation:** Recommendation differentiation by audience segment.
 
 ## License
 
