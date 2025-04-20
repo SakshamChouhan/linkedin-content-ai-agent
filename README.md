@@ -35,8 +35,8 @@ For complete setup instructions, please see the [Installation Guide](./INSTALL.m
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/SakshamChouhan/linkedin-content-ai.git
-cd linkedin-content-ai
+git clone https://github.com/SakshamChouhan/linkedin-content-ai-agent.git
+cd linkedin-content-ai-agent
 ```
 
 2. Install dependencies:
