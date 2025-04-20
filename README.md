@@ -41,7 +41,7 @@ cd linkedin-content-ai
 
 2. Install dependencies:
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 3. Set up your Gemini API key in a `.env` file:  
@@ -49,12 +49,14 @@ Create a file named `.env` in the project root (same folder as `app.py`), and ad
 ```dotenv
 GOOGLE_API_KEY=your_gemini_api_key
 ```
-Replace `your_gemini_api_key` with your actual Gemini API key from [Google AI Studio](https://ai.google.dev/).
+Replace `your_gemini_api_key` with your actual Gemini API key from [Google AI Studio](https://ai.google.dev/).  
+*Note: Do not wrap your API key in quotation marks.*
 
 4. Run the application:
 ```bash
 streamlit run app.py
 ```
+By default, this will open at [http://localhost:8501](http://localhost:8501) in your browser.
 
 ## Architecture
 

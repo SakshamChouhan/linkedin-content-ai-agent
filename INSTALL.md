@@ -19,7 +19,7 @@ This document provides step-by-step instructions for setting up and running the 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://SakshamChouhan/linkedin-content-ai.git
+git clone https://github.com/SakshamChouhan/linkedin-content-ai.git
 cd linkedin-content-ai
 ```
 
@@ -28,7 +28,7 @@ cd linkedin-content-ai
 All required dependencies are listed in `requirements.txt`.
 
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ### 3. Set up Your Gemini API Key with a .env File
@@ -40,6 +40,7 @@ Instead of configuring environment variables in your shell, this application loa
    ```
    GOOGLE_API_KEY=your_gemini_api_key
    ```
+   *Do not wrap your API key in quotes.*
    Replace `your_gemini_api_key` with your actual Gemini API key from [Google AI Studio](https://ai.google.dev/).
 
 3. **Save the file.**  
@@ -55,7 +56,7 @@ The application uses SQLite for data storage. The database will be automatically
 streamlit run app.py
 ```
 
-This will start the Streamlit server and open the application in your default web browser. If it doesn't open automatically, you can access it at http://localhost:5000.
+This will start the Streamlit server and open the application in your default web browser. If it doesn't open automatically, you can access it at [http://localhost:8501](http://localhost:8501).
 
 ## Troubleshooting
 
@@ -67,11 +68,14 @@ This will start the Streamlit server and open the application in your default we
 
 2. **Module Import Errors**
    - Error: "No module named X"
-   - Solution: Make sure you've installed all required packages using pip
+   - Solution: Make sure you've installed all required packages using pip.
 
 3. **Port Already in Use**
    - Error: "Address already in use"
    - Solution: Change the port in the command: `streamlit run app.py --server.port 8501`
+
+4. **Additional Dependency Errors**
+   - You may need system-level dependencies (such as SQLite or Python development headers) depending on your OS.
 
 ## Additional Resources
 
