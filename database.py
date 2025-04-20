@@ -77,7 +77,9 @@ def get_analysis_by_profile_url(profile_url):
     return {}
 
 def save_feedback(data):
-   
+    # Always set a timestamp if not present, so analytics/plots always have it
+    if "timestamp" not in data or not data["timestamp"]:
+        data["timestamp"] = pd.Timestamp.now()
     db[FEEDBACK_COLLECTION].insert_one(data)
 
 

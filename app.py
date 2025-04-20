@@ -19,7 +19,8 @@ from database import (
     get_profile_urls,
     get_profile_data_by_url,
     get_posts_by_profile_url,
-    save_analysis_result
+    save_analysis_result,
+    get_feedback_by_profile_url
 )
 
 # Page configuration
@@ -291,6 +292,88 @@ elif page == "Post Generator":
             if st.session_state[submitted_key]:
                 st.info("Feedback already submitted for this variation. Thank you!")
 
+
+# ─── FEEDBACK DASHBOARD ────────────────────────────────────────────────────────
+elif page == "Feedback Dashboard":
+    st.header("Feedback Dashboard")
+    st.markdown("Track performance and analyze feedback trends from posts and user interactions.")
+
+    # Select profile
+    profile_urls = get_profile_urls()
+    if not profile_urls:
+        st.warning("No profiles found in the database.")
+    else:
+        profile_option = st.selectbox("Select a profile to view feedback", profile_urls, key="feedback_profile")
+
+        feedback_df = get_feedback_by_profile_url(profile_option)
+        if feedback_df.empty:
+            st.info("No feedback available for this profile.")
+        else:
+            # --- KPI Metrics ---
+            st.subheader("Key Metrics")
+            total_feedback = len(feedback_df)
+            num_positive = (feedback_df['feedback'] == 'positive').sum()
+            num_negative = (feedback_df['feedback'] == 'negative').sum()
+            num_saved = (feedback_df['feedback'] == 'saved').sum() if 'saved' in feedback_df['feedback'].unique() else 0
+
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Total Feedback", total_feedback)
+            with col2:
+                st.metric("👍 Likes", num_positive)
+            with col3:
+                st.metric("👎 Dislikes", num_negative)
+            with col4:
+                st.metric("💾 Saved", num_saved)
+
+            # --- Feedback Trend Over Time ---
+            st.subheader("Feedback Trend Over Time")
+            if 'timestamp' in feedback_df.columns:
+                feedback_df['date'] = pd.to_datetime(feedback_df['timestamp'], errors='coerce').dt.date
+                trend_df = feedback_df.groupby(['date', 'feedback']).size().unstack(fill_value=0)
+                fig, ax = plt.subplots(figsize=(10, 5))
+                trend_df.plot(kind="line", marker="o", ax=ax)
+                ax.set_xlabel("Date")
+                ax.set_ylabel("Count")
+                ax.set_title("Feedback Trend Over Time")
+                ax.grid(True, linestyle="--", alpha=0.7)
+                st.pyplot(fig)
+            else:
+                st.info("No feedback timestamp data available for trend analysis.")
+
+            # --- Feedback Distribution Pie Chart ---
+            st.subheader("Feedback Distribution")
+            feedback_counts = feedback_df['feedback'].value_counts()
+            fig2, ax2 = plt.subplots()
+            ax2.pie(feedback_counts, labels=feedback_counts.index, autopct="%1.1f%%", startangle=90, colors=["#4CAF50", "#F44336", "#2196F3"])
+            ax2.axis("equal")
+            st.pyplot(fig2)
+
+            # --- Top Topics and Tone Effectiveness ---
+            st.subheader("Top Topics & Tone Effectiveness")
+            if 'topic' in feedback_df.columns and 'feedback' in feedback_df.columns:
+                topic_feedback = feedback_df.groupby(['topic', 'feedback']).size().unstack(fill_value=0)
+                if not topic_feedback.empty:
+                    st.write("Feedback by Topic:")
+                    st.dataframe(topic_feedback)
+
+                tone_feedback = feedback_df.groupby(['tone', 'feedback']).size().unstack(fill_value=0)
+                if not tone_feedback.empty:
+                    st.write("Feedback by Tone:")
+                    st.dataframe(tone_feedback)
+            else:
+                st.info("No topic/tone info available in feedback data.")
+
+            # --- Detailed Feedback Table ---
+            st.subheader("Detailed Feedback Table")
+            display_cols = ['textual_feedback', 'feedback', 'topic', 'tone', 'timestamp']
+            available_cols = [col for col in display_cols if col in feedback_df.columns]
+            table_df = feedback_df[available_cols].copy()
+            # Only sort if 'timestamp' is available
+            if 'timestamp' in table_df.columns:
+                st.dataframe(table_df.sort_values(by='timestamp', ascending=False), use_container_width=True)
+            else:
+                st.dataframe(table_df, use_container_width=True)
 
 # Footer
 st.markdown("---")
