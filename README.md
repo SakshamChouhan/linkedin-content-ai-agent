@@ -4,14 +4,11 @@
 
 LinkedIn Content Creator AI helps users analyze LinkedIn profiles, find content trends, generate tailored AI-powered posts, and track their effectiveness. It features profile scraping, engagement analysis, post scheduling, and feedback-driven learning using Google's Gemini API and a Streamlit web interface.
 
-![LinkedIn Content Creator AI](./images/image1.png)
-![LinkedIn Content Creator AI](./images/image2.png)
-![LinkedIn Content Creator AI](./images/image3.png)
-![LinkedIn Content Creator AI](./images/image4.png)
-![LinkedIn Content Creator AI](./images/image5.png)
-![LinkedIn Content Creator AI](./images/image62.png)
-![LinkedIn Content Creator AI](./images/image61.png)
-![LinkedIn Content Creator AI](./images/image7.png)
+![LinkedIn Content Creator AI](./images/profileAnalysis.png)
+![LinkedIn Content Creator AI](./images/contentAnalysis.png)
+![LinkedIn Content Creator AI](./images/postGenerator.png)
+![LinkedIn Content Creator AI](./images/postGeneratorResult.png)
+
 
 ## Technology Stack
 - **Frontend**: Streamlit
